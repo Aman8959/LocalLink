@@ -44,6 +44,13 @@ interface NavItem {
   href: string;
 }
 
+interface Post {
+  id: string;
+  author: string;
+  content: string;
+  time: string;
+}
+
 const navItems: NavItem[] = [
   { label: 'Home', href: '#home' },
   { label: 'Features', href: '#features' },
@@ -296,6 +303,20 @@ function Navigation() {
 }
 
 function HeroSection() {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const hasRealData = posts.length > 0;
+
+  const addSamplePost = () => {
+    setPosts([
+      {
+        id: String(Date.now()),
+        author: 'Aman Yadav',
+        content: 'Welcome to LocalLink — this is a demo post to preview the community feed.',
+        time: 'Just now',
+      },
+    ]);
+  };
+
   return (
     <section
       id="home"
@@ -368,28 +389,50 @@ function HeroSection() {
                     <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="p-4 bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl border border-orange-100">
-                      <ShoppingCart className="w-8 h-8 text-orange-500 mb-2" />
-                      <p className="font-semibold text-secondary-900">125</p>
-                      <p className="text-xs text-secondary-500">Active Listings</p>
+                  {hasRealData ? (
+                    <div className="space-y-3 max-h-56 overflow-y-auto">
+                      {posts.map((post) => (
+                        <div key={post.id} className="p-3 bg-white rounded-xl border border-secondary-100">
+                          <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 font-bold">
+                              {post.author.split(' ').map((s) => s[0]).slice(0,2).join('')}
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center justify-between">
+                                <div className="text-sm font-semibold text-secondary-900">{post.author}</div>
+                                <div className="text-xs text-secondary-400">{post.time}</div>
+                              </div>
+                              <p className="text-sm text-secondary-600 mt-1">{post.content}</p>
+                              <div className="flex items-center gap-3 mt-3 text-secondary-400">
+                                <button className="flex items-center gap-2 text-xs hover:text-primary-600">
+                                  <Heart className="w-4 h-4" /> Like
+                                </button>
+                                <button className="flex items-center gap-2 text-xs hover:text-primary-600">
+                                  <Send className="w-4 h-4" /> Reply
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                    <div className="p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border border-purple-100">
-                      <Users className="w-8 h-8 text-purple-500 mb-2" />
-                      <p className="font-semibold text-secondary-900">540+</p>
-                      <p className="text-xs text-secondary-500">Connected Peers</p>
+                  ) : (
+                    <div className="p-4 bg-secondary-50 rounded-2xl text-center">
+                      <div className="mb-3">
+                        <MessageCircle className="w-10 h-10 text-secondary-400 mx-auto" />
+                      </div>
+                      <p className="font-medium text-secondary-900">No activity yet</p>
+                      <p className="text-sm text-secondary-500 mb-4">Be the first to post in your community.</p>
+                      <div className="flex items-center justify-center gap-3">
+                        <button className="btn-primary text-sm" onClick={addSamplePost}>
+                          Preview with demo post
+                        </button>
+                        <a href="#contact" className="btn-outline text-sm">
+                          Invite Members
+                        </a>
+                      </div>
                     </div>
-                  </div>
-
-                  <div className="p-4 bg-gradient-to-r from-primary-50 to-accent-light rounded-2xl border border-primary-100">
-                    <div className="flex items-center gap-3 mb-3">
-                      <Bell className="w-5 h-5 text-primary-600" />
-                      <span className="font-medium text-secondary-900">New Announcement</span>
-                    </div>
-                    <p className="text-sm text-secondary-600">
-                      Society meeting scheduled for this Sunday at 10 AM...
-                    </p>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
